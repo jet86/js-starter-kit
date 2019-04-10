@@ -1,8 +1,8 @@
 
 const WEB3_PROVIDER_URL = 'https://rinkeby.infura.io/'
-const WATCHER_URL = ''
-const CHILDCHAIN_URL = ''
-const PLASMA_CONTRACT_ADDRESS = ''
+const WATCHER_URL = 'https://watcher.ari.omg.network/'
+const CHILDCHAIN_URL = 'https://ari.omg.network/'
+const PLASMA_CONTRACT_ADDRESS = '0x44de0ec539b8c4a4b530c78620fe8320167f2f74'
 
 var web3 = new Web3()
 let globalKeystore
