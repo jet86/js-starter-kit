@@ -2,6 +2,10 @@ const TOKEN_CONTRACT_ADDRESS = '0x65d82f6ff66dbc4e455b36055f682619a05abb9b'
 const PLASMA_FAUCET_ADDRESS = '0xcf9567cc6041d262387a1b0a03dd7a64fcbf9fd8'
 const PLASMA_FAUCET_VALUE = '1000000000000000000'
 
+// The following is a bad idea - do not host your seed publicly!!!
+const VAULT_PASSWORD = ''
+const VAULT_SEED = ''
+
 async function childchainTransfer () {
   var fromAddr = PLASMA_FAUCET_ADDRESS
   var toAddr = document.getElementById('transferToAddress').value
@@ -73,36 +77,64 @@ async function childchainTransfer () {
 }
 
 async function showFaucetBalance () {
+  document.getElementById('faucetRootchainBalance').innerHTML = ''
+  document.getElementById('faucetChildchainBalance').innerHTML = ''
   web3.eth.getBalance(PLASMA_FAUCET_ADDRESS, (err, ethBalance) => {
     if (err) {
       console.error(err)
       return
     }
-    document.getElementById('faucetRootchainBalance').innerHTML += '<div>' + PLASMA_FAUCET_ADDRESS + ': ' + (ethBalance / 1.0e18) + ' ETH </div>'
+    document.getElementById('faucetRootchainBalance').innerHTML = '<div>' + PLASMA_FAUCET_ADDRESS + ': ' + (ethBalance / 1.0e18) + ' ETH </div>'
   })
   childChain.getBalance(PLASMA_FAUCET_ADDRESS).then(childchainBalance => {
-    document.getElementById('faucetChildchainBalance').innerHTML += '<div>' + PLASMA_FAUCET_ADDRESS + ': ' + JSON.stringify(childchainBalance) + '</div>'
+    document.getElementById('faucetChildchainBalance').innerHTML = '<div>' + PLASMA_FAUCET_ADDRESS + ': ' + JSON.stringify(childchainBalance) + '</div>'
   })
 }
 
-async function showBalances () {
-  var addresses = globalKeystore.getAddresses()
-  document.getElementById('rootchainBalance').innerHTML = 'Retrieving addresses...'
+function loadFaucetVault () {
+  lightwallet.keystore.createVault({
+    password: VAULT_PASSWORD,
+    seedPhrase: VAULT_SEED,
+    hdPathString: "m/0'/0'/0'"
+  }, function (err, keystore) {
+    if (err) {
+      console.error(err)
+      return
+    }
 
-  if (addresses.length > 0) {
-    document.getElementById('rootchainBalance').innerHTML = ''
-    document.getElementById('childchainBalance').innerHTML = ''
-    addresses.forEach(async (address) => {
-      web3.eth.getBalance(address, (err, ethBalance) => {
-        if (err) {
-          console.error(err)
-          return
-        }
-        document.getElementById('rootchainBalance').innerHTML += '<div>' + address + ': ' + (ethBalance / 1.0e18) + ' ETH </div>'
-      })
-      childChain.getBalance(address).then(childchainBalance => {
-        document.getElementById('childchainBalance').innerHTML += '<div>' + address + ': ' + JSON.stringify(childchainBalance) + '</div>'
-      })
+    globalKeystore = keystore
+
+    const web3Provider = new HookedWeb3Provider({
+      host: WEB3_PROVIDER_URL,
+      transaction_signer: globalKeystore
     })
-  }
+    web3.setProvider(web3Provider)
+
+    rootChain = new RootChain(web3, PLASMA_CONTRACT_ADDRESS)
+    childChain = new ChildChain(WATCHER_URL, CHILDCHAIN_URL)
+
+    document.getElementById('faucetTokenContractAddress').innerHTML = '<div>' + TOKEN_CONTRACT_ADDRESS + '</div>'
+    showFaucetBalance()
+  })
+}
+
+async function showBalance () {
+  address = document.getElementById('recipientAddress').value
+  document.getElementById('rootchainBalance').innerHTML = ''
+  document.getElementById('childchainBalance').innerHTML = ''
+  web3.eth.getBalance(address, (err, ethBalance) => {
+    if (err) {
+      console.error(err)
+      return
+    }
+    document.getElementById('rootchainBalance').innerHTML = '<div>' + address + ': ' + (ethBalance / 1.0e18) + ' ETH </div>'
+  })
+  childChain.getBalance(address).then(childchainBalance => {
+    document.getElementById('childchainBalance').innerHTML = '<div>' + address + ': ' + JSON.stringify(childchainBalance) + '</div>'
+  })
+}
+
+function loadAddress () {
+  showBalance()
+  document.getElementById('addressArea').style.display = 'block'
 }

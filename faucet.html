@@ -74,7 +74,7 @@
 </head>
 <title>Plasma ERC20 Faucet</title>
 
-<body>
+<body onload="loadFaucetVault()">
   <div class="ui stackable grid container" style='padding: 50px 0;'>
     <div class='row'>
       <img src='./images/OmiseGO_Logo.svg' />
@@ -85,6 +85,8 @@
         <div>
           <button class="ui primary button" onclick="showFaucetBalance()">Refresh balances</button>
         </div>
+        <h4>Faucet Token Contract</h4>
+        <div id="faucetTokenContractAddress" class="balance"></div>
         <h4>Rootchain balance</h4>
         <div id="faucetRootchainBalance" class="balance"></div>
         <h4>Childchain balance</h4>
@@ -94,9 +96,9 @@
     <div id="walletArea" class="wallet-area ui segment" style='width: 100%'>
       <div class='row'>
         <div class='ui input'>
-          <input type="text" id="seed" value="" size="80" placeholder='your Ethereum address'></input>
+          <input type="text" id="recipientAddress" value="" size="80" placeholder='your Ethereum address'></input>
         </div>
-        <button class="ui primary button" onclick="restoreSeed()">Load Address</button>
+        <button class="ui primary button" onclick="loadAddress()">Load Address</button>
       </div>
       <div>
       </div>
@@ -106,7 +108,7 @@
         <h2>Recipient Address</h2>
         <div>
           <button class="ui primary button" onclick="claimTokens()">Claim tokens from faucet</button>
-          <button class="ui primary button" onclick="showBalances()">Refresh balances</button>
+          <button class="ui primary button" onclick="showBalance()">Refresh balances</button>
         </div>
         <h4>Rootchain balance</h4>
         <div id="rootchainBalance" class="balance"></div>
