@@ -1,27 +1,29 @@
-const TOKEN_CONTRACT_ADDRESS = '0x65d82f6ff66dbc4e455b36055f682619a05abb9b'
-const PLASMA_FAUCET_ADDRESS = '0xcf9567cc6041d262387a1b0a03dd7a64fcbf9fd8'
-const PLASMA_FAUCET_VALUE = '1000000000000000000'
+const TOKEN_CONTRACT_ADDRESS = ''
+const PLASMA_FAUCET_ADDRESS = ''
+const PLASMA_FAUCET_VALUE = '' // in wei
 
 // The following is a bad idea - do not host your seed publicly!!!
 const VAULT_PASSWORD = ''
 const VAULT_SEED = ''
 
-async function childchainTransfer () {
+async function claimTokens () {
   var fromAddr = PLASMA_FAUCET_ADDRESS
-  var toAddr = document.getElementById('transferToAddress').value
+  var toAddr = document.getElementById('recipientAddress').value
   var tokenContract = TOKEN_CONTRACT_ADDRESS
   var value = PLASMA_FAUCET_VALUE
+
+  console.log('from: ' + fromAddr + ' to: ' + toAddr + ' token: ' + tokenContract + ' value: ' + value)
 
   const utxos = await childChain.getUtxos(fromAddr)
   const utxosToSpend = selectUtxos(utxos, value, tokenContract)
   if (!utxosToSpend) {
-    alert(`The faucet is currently out of tokens. Please contact the faucet operator.`)
+    alert('The faucet is currently out of tokens. Please contact the faucet operator.')
     return
   }
   
   const utxosForFee = selectUtxos(utxos, 1, OmgUtil.transaction.ETH_CURRENCY)
   if (!utxosForFee) {
-    alert(`No utxo with ETH to act as dummy fee. Please add at least 1 wei ETH to the faucet address.`)
+    alert('No utxo with ETH to act as dummy fee. Please send at least 1 wei ETH to the faucet address.')
     return
   }
   
@@ -55,7 +57,7 @@ async function childchainTransfer () {
   // Create the unsigned transaction
   const unsignedTx = childChain.createTransaction(txBody)
 
-  const password = prompt('Enter password', 'Password')
+  const password = VAULT_PASSWORD
 
   // Sign it
   globalKeystore.keyFromPassword(password, async function (err, pwDerivedKey) {
@@ -65,7 +67,7 @@ async function childchainTransfer () {
     }
     // Decrypt the private key
     const privateKey = globalKeystore.exportPrivateKey(fromAddr, pwDerivedKey)
-    // console.log(privateKey) // Bad idea!!!
+    console.log(privateKey) // Bad idea!!!
     // Sign the transaction with the private key
     const signatures = await childChain.signTransaction(unsignedTx, [privateKey, privateKey])
     // Build the signed transaction
@@ -91,7 +93,7 @@ async function showFaucetBalance () {
   })
 }
 
-function loadFaucetVault () {
+function createVault () {
   lightwallet.keystore.createVault({
     password: VAULT_PASSWORD,
     seedPhrase: VAULT_SEED,
@@ -115,6 +117,16 @@ function loadFaucetVault () {
 
     document.getElementById('faucetTokenContractAddress').innerHTML = '<div>' + TOKEN_CONTRACT_ADDRESS + '</div>'
     showFaucetBalance()
+
+    globalKeystore.keyFromPassword(VAULT_PASSWORD, function (err, pwDerivedKey) {
+      if (err) {
+        console.error(err)
+        return
+      }
+
+      // Generate the first 2 addresses in the wallet
+      globalKeystore.generateNewAddress(pwDerivedKey, 2)
+    })
   })
 }
 
