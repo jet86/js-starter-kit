@@ -67,7 +67,7 @@ async function claimTokens () {
     }
     // Decrypt the private key
     const privateKey = globalKeystore.exportPrivateKey(fromAddr, pwDerivedKey)
-    console.log(privateKey) // Bad idea!!!
+    // console.log(privateKey) // Bad idea!!!
     // Sign the transaction with the private key
     const signatures = await childChain.signTransaction(unsignedTx, [privateKey, privateKey])
     // Build the signed transaction
