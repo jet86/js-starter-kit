@@ -150,3 +150,22 @@ function loadAddress () {
   showBalance()
   document.getElementById('addressArea').style.display = 'block'
 }
+
+async function getBalanceOfToken(tokenAddress, tokenCurrency) {
+  //console.log('tokenAddress: ' + tokenAddress + ' tokenCurrency: ' + tokenCurrency)
+
+  let addressBalances
+  let amountOfBalance = 0
+
+  addressBalances = await childChain.getBalance(tokenAddress)
+
+  for (let tokenBalance in addressBalances) {
+    //console.log('tokenAddress: ' + tokenAddress + ' currency: ' + addressBalances[tokenBalance]["currency"] + ' amount: ' + addressBalances[tokenBalance]["amount"])
+
+    if(addressBalances[tokenBalance]["currency"] == tokenCurrency) {
+      amountOfBalance = addressBalances[tokenBalance]["amount"]
+    }
+  }
+
+  return amountOfBalance
+}
