@@ -55,7 +55,7 @@ The Token Ring allows you to "rotate" tokens through a "ring" of addresses gener
 
 `RING_TOKEN_VALUE` The amount of tokens you wish to rotate at a time, denominated in wei
 
-`RING_SIZE` The number of addresses you wish to generate and rotate tokens through.
+`RING_SIZE` The number of addresses you wish to generate and rotate tokens through. You may like to start with a size of 5 addresses for trying it out, before increasing the ring size to a larger number of addresses such as 50.
 
 `RING_TOKEN_TOTAL` The total amount of tokens you have spread across all addresses in the "ring"
 
