@@ -80,9 +80,16 @@ function loadUtxoVault (vPass, vSeed, vDepth, singleAddress) {
 }
 
 async function showUtxos (utxoAddress) {
+  document.getElementById('utxoAddress').innerHTML = ''
+  document.getElementById('utxoDetails').innerHTML = '' 
+
   //console.log(utxoAddress)
   document.getElementById('utxoArea').style.display = 'block'
   document.getElementById('utxoAddress').innerHTML = utxoAddress + ' contains ' + await getUtxoCount(utxoAddress) + ' UTXOs'
 
-  //
+  const utxos = await childChain.getUtxos(utxoAddress)
+
+  //console.log(JSON.stringify(utxos))
+
+  document.getElementById('utxoDetails').innerHTML = '<pre>' + JSON.stringify(utxos, null, 2) + '</pre>'
 }
