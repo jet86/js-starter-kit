@@ -71,3 +71,13 @@ The Token Ring allows you to "rotate" tokens through a "ring" of addresses gener
 * Once every address has some ETH, press `Redistribute Tokens` to start spreading the tokens throughout each of the addresses. This will take quite a while, so it may be preferable to instead manually send an equal amount to each address (an automated way to do this may be added in the future). You may also need to use this button in the future if the ring becomes unbalanced.
 * Once every address has some tokens, press `Rotate Tokens` to start rotating the configured amount of tokens from each address to the next in the ring.
 * Transactions should show up in the "Transaction Submission Logs" and should then also be visible on https://quest.omg.network/ once included in a block.
+
+## Custom Paramaters
+
+As well as filling in or modifying the required fields above, there are a couple of pre-defined paramaters which you may like to modify:
+
+`TX_RUNS` The total amount of rotations (attempted transactions) to make. Usually a multiple of `RING_SIZE` and if everything is working well, usually very large.
+
+`REFRESH_RATE` The balances of each address in the ring will be refreshed after this many rotations. Usually a multiple of `RING_SIZE` - you may like to set initially set it to the same as `RING_SIZE`
+
+`TX_COOL_DOWN` The total amount of time (in ms) after each rotation before moving on to the next. The smaller the ring, the higher this will need to be.
