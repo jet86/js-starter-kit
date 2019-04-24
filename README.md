@@ -72,7 +72,7 @@ The Token Ring allows you to "rotate" tokens through a "ring" of addresses gener
 * Once every address has some tokens, press `Rotate Tokens` to start rotating the configured amount of tokens from each address to the next in the ring.
 * Transactions should show up in the "Transaction Submission Logs" and should then also be visible on https://quest.omg.network/ once included in a block.
 
-## Custom Paramaters
+## Token Ring Custom Paramaters
 
 As well as filling in or modifying the required fields above, there are a couple of pre-defined paramaters which you may like to modify:
 
