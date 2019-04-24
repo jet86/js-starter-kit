@@ -1,8 +1,21 @@
-# plasma-erc20-faucet
+# Plasma Tools
 
-This Plasma ERC20 Faucet is forked from, and builds on, https://github.com/omisego/js-starter-kit
+These tools began during the EDCON 2019 Hackathon following the announcement of the puclic release of the Ari OMG testnet network, when I decided to test making ETH and ERC20 transactions on Ari, then decided to build an ERC20 faucet on Ari itself.
 
-You should go there and familiarise yourself with using the starter kit before using this faucet.
+This Plasma Tools repo is forked from, and builds on, https://github.com/omisego/js-starter-kit
+
+You should go there and familiarise yourself with using the starter kit before using these tools.
+
+The following tools are currently available (or planned):
+
+* [Plasma ERC20 Faucet](#plasma-erc20-faucet)
+* Token Ring
+* viewTXO
+* Merge and Exit
+
+# Plasma ERC20 Faucet
+
+The Plasma ERC20 Faucet allows you to provide a faucet for ERC20 tokens directly on a plasma childchain. This should result in reduced fees for the faucet provider, as they will not have to pay the gas for each transaction on the Ethereum root chain.
 
 ## Using the faucet as a consumer
 
