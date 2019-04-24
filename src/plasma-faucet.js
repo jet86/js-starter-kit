@@ -4,7 +4,7 @@ const PLASMA_FAUCET_VALUE = '' // in wei
 
 // The following is a bad idea - do not host your seed publicly!!!
 const VAULT_PASSWORD = ''
-const VAULT_SEED = ''
+let VAULT_SEED = ''
 
 async function claimTokens () {
   var fromAddr = PLASMA_FAUCET_ADDRESS
@@ -94,6 +94,10 @@ async function showFaucetBalance () {
 }
 
 function createVault () {
+  if(!VAULT_SEED) {
+    VAULT_SEED = prompt("Please enter your seed phrase", "<seed phrase>")
+  }
+
   lightwallet.keystore.createVault({
     password: VAULT_PASSWORD,
     seedPhrase: VAULT_SEED,

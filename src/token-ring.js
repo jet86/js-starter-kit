@@ -11,13 +11,17 @@ const TX_COOL_DOWN = 600
 
 // The following is a bad idea - do not host your seed publicly!!!
 const RING_VAULT_PASSWORD = ''
-const RING_VAULT_SEED = ''
+let RING_VAULT_SEED = ''
 
 const coolDown = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
 function createRingVault () {
+  if(!RING_VAULT_SEED) {
+    RING_VAULT_SEED = prompt("Please enter your seed phrase", "<seed phrase>")
+  }
+
   lightwallet.keystore.createVault({
     password: RING_VAULT_PASSWORD,
     seedPhrase: RING_VAULT_SEED,
