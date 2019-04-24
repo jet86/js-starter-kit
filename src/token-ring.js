@@ -80,7 +80,7 @@ async function redistributeEth() {
     
     if(surplus > 0) {
       var txCreationLog = document.getElementById('TxCreationLog').innerHTML
-      document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': index: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' surplus: ' + surplus + '</div>' + txCreationLog
+      document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': i: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' surplus: ' + surplus + '</div>' + txCreationLog
 
       if(surplus < ((RING_TOKEN_TOTAL * RING_ETH_MULTIPLIER) / RING_SIZE)){
         await rotateEth(rotateFromAddr, rotateToAddr, surplus)
@@ -177,7 +177,7 @@ async function redistributeTokens() {
     
     if(surplus > 0) {
       var txCreationLog = document.getElementById('TxCreationLog').innerHTML
-      document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': index: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' surplus: ' + surplus + '</div>' + txCreationLog
+      document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': i: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' surplus: ' + surplus + '</div>' + txCreationLog
 
       if(surplus < (RING_TOKEN_TOTAL / RING_SIZE)) {
         await rotateToken(rotateFromAddr, rotateToAddr, surplus)
@@ -214,7 +214,7 @@ async function rotateTokens() {
     
     //console.log('rotation: ' + rotations + ' index: ' + (rotations % 5) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' timestamp: ' + Date.now())
     var txCreationLog = document.getElementById('TxCreationLog').innerHTML
-    document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': rotation: ' + rotations + ' index: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + '</div>' + txCreationLog
+    document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotations + ' i: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + '</div>' + txCreationLog
 
     await rotateToken(rotateFromAddr, rotateToAddr, RING_TOKEN_VALUE)
 
