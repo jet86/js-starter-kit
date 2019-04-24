@@ -2,9 +2,7 @@
 
 These tools began during the EDCON 2019 Hackathon following the announcement of the puclic release of the Ari OMG testnet network, when I decided to test making ETH and ERC20 transactions on Ari, then decided to build an ERC20 faucet on Ari itself.
 
-This Plasma Tools repo is forked from, and builds on, https://github.com/omisego/js-starter-kit
-
-You should go there and familiarise yourself with using the starter kit before using these tools.
+This Plasma Tools repo is forked from, and builds on, the [JS Starter Kit](https://github.com/omisego/js-starter-kit). You should go there and familiarise yourself with using the starter kit before using these tools. A helpful place to start is [Get to know the Plasma Interface](https://github.com/omisego/dev-portal/blob/master/guides/plasma_interface_from_browser.md). For more information, visit the [OmiseGO Developer Portal](https://developer.omisego.co/).
 
 The following tools are currently available (or planned):
 
