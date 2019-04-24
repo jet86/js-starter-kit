@@ -1,6 +1,6 @@
-const TOKEN_CONTRACT_ADDRESS = ''
-const PLASMA_FAUCET_ADDRESS = ''
-const PLASMA_FAUCET_VALUE = '' // in wei
+const TOKEN_CONTRACT_ADDRESS = '0x65d82f6ff66dbc4e455b36055f682619a05abb9b'
+const PLASMA_FAUCET_ADDRESS = '0xcf9567cc6041d262387a1b0a03dd7a64fcbf9fd8'
+const PLASMA_FAUCET_VALUE = '1000000000000000000' // in wei
 
 // The following is a bad idea - do not host your seed publicly!!!
 const VAULT_PASSWORD = ''
