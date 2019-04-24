@@ -8,8 +8,8 @@ The following tools are currently available (or planned):
 
 * [Plasma ERC20 Faucet](#plasma-erc20-faucet)
 * [Token Ring](#token-ring)
-* viewTXO
-* Merge and Exit
+* [viewTXO](#viewtxo)
+* Merge and Exit (coming soon)
 
 # Plasma ERC20 Faucet
 
@@ -81,3 +81,15 @@ As well as filling in or modifying the required fields above, there are a couple
 `REFRESH_RATE` The balances of each address in the ring will be refreshed after this many rotations. Usually a multiple of `RING_SIZE` - you may like to set initially set it to the same as `RING_SIZE`
 
 `TX_COOL_DOWN` The total amount of time (in ms) after each rotation before moving on to the next. The smaller the ring, the higher this will need to be.
+
+# viewTXO
+
+The viewTXO page allows you to view the UTXOs belonging either to an individual address, or to multiple addresses derived from a single seed phrase (ie an HD wallet).
+
+## Using viewTXO
+
+* Clone or download this repo to your computer
+* Access [viewTXO.html](viewTXO.html) in your browser
+* Enter an Ethereum address and click "Load Wallet or Address" to view the UTXO details for that address.
+* Enter a seed phrase to view the addresses derived from that seed phrase and the number of UTXOs in each address. It will default to showing the first 2 addresses, however you can view more by entering a number to view.
+* You can then click on the number of UTXOs (showing as a blue link) to view the UTXO details for that address.
