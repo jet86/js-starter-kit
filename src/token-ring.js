@@ -84,14 +84,14 @@ async function redistributeEth() {
     
     if(surplus > 0) {
       var txCreationLog = document.getElementById('TxCreationLog').innerHTML
-      document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': i: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' surplus: ' + surplus + '</div>' + txCreationLog
+      document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotations + ' i: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' surplus: ' + surplus + '</div>' + txCreationLog
 
       if(surplus < ((RING_TOKEN_TOTAL * RING_ETH_MULTIPLIER) / RING_SIZE)){
         await rotateEth(rotateFromAddr, rotateToAddr, surplus)
       }
       else
       {
-        await rotateEth(rotateFromAddr, rotateToAddr, ((RING_TOKEN_TOTAL * RING_ETH_MULTIPLIER) / RING_SIZE))
+        await rotateEth(rotateFromAddr, rotateToAddr, ((RING_TOKEN_TOTAL * RING_ETH_MULTIPLIER) / RING_SIZE), rotations)
       }
     }
 
@@ -109,7 +109,7 @@ async function redistributeEth() {
   document.getElementById('CurrentState').innerHTML = 'Not running...'
 }
 
-async function rotateEth (tokenFrom, tokenTo, tokenValue) {
+async function rotateEth (tokenFrom, tokenTo, tokenValue, rotationCount) {
   var fromAddr = tokenFrom
   var toAddr = tokenTo
   var tokenContract = OmgUtil.transaction.ETH_CURRENCY
@@ -162,7 +162,7 @@ async function rotateEth (tokenFrom, tokenTo, tokenValue) {
     const result = await childChain.submitTransaction(signedTx)
     console.log(`Submitted transaction: ${JSON.stringify(result)}`)
     var txSubmissionLog = document.getElementById('TxSubmissionLog').innerHTML
-    document.getElementById('TxSubmissionLog').innerHTML = '<div>' + Date.now() + ': ' + JSON.stringify(result) + '</div>' + txSubmissionLog
+    document.getElementById('TxSubmissionLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotationCount + ' ' + JSON.stringify(result) + '</div>' + txSubmissionLog
   })
 }
 
@@ -181,14 +181,14 @@ async function redistributeTokens() {
     
     if(surplus > 0) {
       var txCreationLog = document.getElementById('TxCreationLog').innerHTML
-      document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': i: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' surplus: ' + surplus + '</div>' + txCreationLog
+      document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotations + ': i: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' surplus: ' + surplus + '</div>' + txCreationLog
 
       if(surplus < (RING_TOKEN_TOTAL / RING_SIZE)) {
         await rotateToken(rotateFromAddr, rotateToAddr, surplus)
       }
       else
       {
-        await rotateToken(rotateFromAddr, rotateToAddr, (RING_TOKEN_TOTAL / RING_SIZE))
+        await rotateToken(rotateFromAddr, rotateToAddr, (RING_TOKEN_TOTAL / RING_SIZE), rotations)
       }
     }
 
