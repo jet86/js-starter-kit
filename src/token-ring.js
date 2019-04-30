@@ -6,8 +6,8 @@ const RING_TOKEN_TOTAL = 5000
 const RING_ETH_MULTIPLIER = 1000
 
 const TX_RUNS = 10000
-const REFRESH_RATE = 200
-const TX_COOL_DOWN = 600
+const REFRESH_RATE = 1000
+const TX_COOL_DOWN = 1000 // Set to 1000 for a ring size of 50 (or 50,000 / RING_SIZE) to avoid utxo errors
 
 // The following is a bad idea - do not host your seed publicly!!!
 const RING_VAULT_PASSWORD = ''
@@ -213,14 +213,14 @@ async function rotateTokens() {
     //console.log(rotations + ' ' + (rotations % 5) + ' ' + Date.now())
     document.getElementById('CurrentState').innerHTML = 'Timestamp: ' + Date.now() + '  -=-  Rotation: ' + rotations + ' of ' + TX_RUNS + '  -=-  Index: ' + (rotations % RING_SIZE) + ' of ' + RING_SIZE + '  -=-  Cool Down: ' + TX_COOL_DOWN + 'ms'
     
-    var rotateFromAddr = globalKeystore.getAddresses()[rotations % 5]
-    var rotateToAddr = globalKeystore.getAddresses()[(rotations + 1) % 5]
+    var rotateFromAddr = globalKeystore.getAddresses()[rotations % RING_SIZE]
+    var rotateToAddr = globalKeystore.getAddresses()[(rotations + 1) % RING_SIZE]
     
     //console.log('rotation: ' + rotations + ' index: ' + (rotations % 5) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' timestamp: ' + Date.now())
     var txCreationLog = document.getElementById('TxCreationLog').innerHTML
     document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotations + ' i: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + '</div>' + txCreationLog
 
-    await rotateToken(rotateFromAddr, rotateToAddr, RING_TOKEN_VALUE)
+    await rotateToken(rotateFromAddr, rotateToAddr, RING_TOKEN_VALUE, rotations)
 
     await coolDown(TX_COOL_DOWN)
 
@@ -236,24 +236,29 @@ async function rotateTokens() {
   document.getElementById('CurrentState').innerHTML = 'Not running...'
 }
 
-async function rotateToken(tokenFrom, tokenTo, tokenValue) {
+async function rotateToken(tokenFrom, tokenTo, tokenValue, rotationCount) {
   var fromAddr = tokenFrom
   var toAddr = tokenTo
   var tokenContract = RING_TOKEN_CONTRACT_ADDRESS
   var value = tokenValue
 
   const utxos = await childChain.getUtxos(fromAddr)
+  //console.log('utxos: ' + JSON.stringify(utxos))
   const utxosToSpend = await selectUtxos(utxos, value, tokenContract)
   if (!utxosToSpend) {
     console.log('The ring is currently out of tokens. Please contact the ring operator.')
     return
   }
+
+  //console.log('utxosToSpend: ' + JSON.stringify(utxosToSpend))
     
-  const utxosForFee = await selectUtxos(utxos, 1, OmgUtil.transaction.ETH_CURRENCY)
+  var utxosForFee = await selectUtxos(utxos, 1, OmgUtil.transaction.ETH_CURRENCY)
   if (!utxosForFee) {
     console.log('No utxo with ETH to act as dummy fee. Please send at least 1 wei ETH to each ring address.')
     return
   }
+
+  //console.log('utxosForFee: ' + JSON.stringify(utxosForFee))
     
   utxosToSpend.push(utxosForFee[0])
 
@@ -282,13 +287,15 @@ async function rotateToken(tokenFrom, tokenTo, tokenValue) {
     })
   }
 
+  //console.log('txBody: ' + JSON.stringify(txBody))
+
   // Create the unsigned transaction
   const unsignedTx = await childChain.createTransaction(txBody)
 
   const password = RING_VAULT_PASSWORD
 
   // Sign it
-  globalKeystore.keyFromPassword(password, async function (err, pwDerivedKey) {
+  await globalKeystore.keyFromPassword(password, async function (err, pwDerivedKey) {
     if (err) {
       console.error(err)
       return
@@ -302,9 +309,9 @@ async function rotateToken(tokenFrom, tokenTo, tokenValue) {
     const signedTx = await childChain.buildSignedTransaction(unsignedTx, signatures)
     // Submit the signed transaction to the childchain
     const result = await childChain.submitTransaction(signedTx)
-    console.log(`Submitted transaction: ${JSON.stringify(result)}`)
+    console.log(rotationCount + `: Submitted transaction: ${JSON.stringify(result)}`)
     var txSubmissionLog = document.getElementById('TxSubmissionLog').innerHTML
-    document.getElementById('TxSubmissionLog').innerHTML = '<div>' + Date.now() + ': ' + JSON.stringify(result) + '</div>' + txSubmissionLog
+    document.getElementById('TxSubmissionLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotationCount + ' ' + JSON.stringify(result) + '</div>' + txSubmissionLog
   })
 }
 
