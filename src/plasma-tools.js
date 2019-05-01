@@ -41,3 +41,7 @@ async function getUtxoCount(tokenAddress) {
 
   return utxos.length
 }
+
+function shortenAddress(ethAddress) {
+  return ethAddress.substring(0,8) + '...' + ethAddress.substring(ethAddress.length - 6, ethAddress.length)
+}
