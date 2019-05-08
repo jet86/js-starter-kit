@@ -162,7 +162,7 @@ async function rotateEth (tokenFrom, tokenTo, tokenValue, rotationCount) {
     const result = await childChain.submitTransaction(signedTx)
     console.log(`Submitted transaction: ${JSON.stringify(result)}`)
     var txSubmissionLog = document.getElementById('TxSubmissionLog').innerHTML
-    document.getElementById('TxSubmissionLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotationCount + ' ' + JSON.stringify(result) + '</div>' + txSubmissionLog
+    document.getElementById('TxSubmissionLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotationCount + ' ' + shortenAddressInString(JSON.stringify(result)) + '</div>' + txSubmissionLog
   })
 }
 
@@ -311,7 +311,7 @@ async function rotateToken(tokenFrom, tokenTo, tokenValue, rotationCount) {
     const result = await childChain.submitTransaction(signedTx)
     console.log(rotationCount + `: Submitted transaction: ${JSON.stringify(result)}`)
     var txSubmissionLog = document.getElementById('TxSubmissionLog').innerHTML
-    document.getElementById('TxSubmissionLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotationCount + ' ' + JSON.stringify(result) + '</div>' + txSubmissionLog
+    document.getElementById('TxSubmissionLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotationCount + ' ' + shortenAddressInString(JSON.stringify(result)) + '</div>' + txSubmissionLog
   })
 }
 
