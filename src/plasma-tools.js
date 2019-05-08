@@ -45,3 +45,8 @@ async function getUtxoCount(tokenAddress) {
 function shortenAddress(ethAddress) {
   return ethAddress.substring(0,8) + '...' + ethAddress.substring(ethAddress.length - 6, ethAddress.length)
 }
+
+function shortenAddressInString(stringWithAddress) {
+  var splitAt0x = stringWithAddress.split("0x")
+  return splitAt0x[0] + '0x' + splitAt0x[1].substring(0,6) + '...' + splitAt0x[1].substring(58)
+}
