@@ -1,0 +1,127 @@
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="./src/semantic/semantic.min.css">
+  <link rel="shortcut icon" href='./images/favicon.png'>
+  <script type="text/javascript" src="./src/dist/lightwallet.min.js"></script>
+  <script type="text/javascript" src="./src/dist/omg.js"></script>
+  <script type="text/javascript" src="./src/dist/web3.js"></script>
+  <script type="text/javascript" src="./src/dist/hooked-web3-provider.js"></script>
+  <script type="text/javascript" src="./src/dist/bignumber.min.js"></script>
+  <script type="text/javascript" src="./src/omg-wallet.js"></script>
+  <script type="text/javascript" src="./src/plasma-tools.js"></script>
+  <script type="text/javascript" src="./src/mergeandexit.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+  <script src="./src/semantic/semantic.min.js"></script>
+  <style>
+    body {
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+    .balance {
+      font-family: monospace;
+    }
+
+    h2 {
+      background-color: lightgrey;
+      display: inline-block;
+      padding: 5px 20px;
+      border-radius: 10px;
+    }
+
+    .fn-container {
+      display: flex;
+      align-items: stretch;
+      height: 450px;
+      justify-content: space-between;
+      width: 100%;
+
+    }
+
+    .fn-container>div {
+      flex: 0 0 30%;
+    }
+
+    .fn-container .segment {
+      margin-top: 0;
+      margin-bottom: 0;
+
+    }
+
+    .fn-container button {
+      float: right;
+    }
+
+    .create-wallet {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    button.ui.primary.button {
+      background-color: #1a56f0;
+    }
+
+    button.ui.primary.button:hover {
+      background-color: #1a56f0;
+    }
+
+    button.ui.primary.button:focus {
+      background-color: #1a56f0;
+    }
+  </style>
+</head>
+<title>Merge and Exit</title>
+
+<body>
+  <div class="ui stackable grid container" style='padding: 50px 0;'>
+    <div class='row'>
+      <img src='./images/OmiseGO_Jetcoins.png' width='304' height='36' />
+    </div>
+    <div id="walletArea" class="wallet-area ui segment" style='width: 100%'>
+      <div class='row'>
+        <button class="ui primary button" onclick="loadWalletAddress()">Load Wallet</button>
+        <div class='ui input'>
+          <input type="text" id="seed" value="" size="80" placeholder='your seed phase...'></input>
+          &nbsp;
+          <input type="text" id="showAddresses" value="" size="20" placeholder='number of addresses...'></input>
+        </div>
+      </div>
+      <div>
+      </div>
+    </div>
+    <div class='row'>
+      <div id="addressArea" class="address-area ui segment" style="display:none; width: 100%;">
+        <h2>Addresses</h2>
+        <div>
+          <button class="ui primary button" onclick="mergeAddresses()" style="width: 200px">Merge to First Address</button>
+          <button class="ui primary button" onclick="exitAddress()" style="width: 200px">Exit First Address</button>
+          <button class="ui primary button" onclick="showAddresses()" style="width: 200px">Refresh balances</button>
+        </div>
+        <h4>Childchain Balances</h4>
+        <div id="childchainBalance" class="balance"></div>
+      </div>
+      <div id="utxoArea" class="address-area ui segment" style="display:none; width: 100%;">
+        <h4>Address</h4>
+        <div id="utxoAddress" class="balance"></div>
+        <br>
+        <button class="ui primary button" id="mergeUTXObutton" onclick="mergeAddressUTXOs()" style="width: 200px">Merge UTXOs</button>
+        <h4>UTXO Details</h4>
+        <div id="utxoDetails" class="balance"></div>
+      </div>
+    </div>
+    <div id="LogArea" class="address-area ui segment" style="display:none; width: 100%;">
+      <button class="ui primary button" onclick="clearLogs()">Clear Logs</button>
+      <h4>Current State</h4>
+      <div id="CurrentState" class="balance">Not running...</div>
+      <h4>Transaction Submission Logs</h4>
+      <div id="TxSubmissionLog" class="balance"></div>
+      <h4>Transaction Creation Logs</h4>
+      <div id="TxCreationLog" class="balance"></div>
+    </div>
+  </div>
+</body>
+
+</html>
