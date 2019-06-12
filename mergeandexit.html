@@ -96,9 +96,11 @@
       <div id="addressArea" class="address-area ui segment" style="display:none; width: 100%;">
         <h2>Addresses</h2>
         <div>
-          <button class="ui primary button" onclick="mergeAddresses()" style="width: 200px">Merge to First Address</button>
-          <button class="ui primary button" onclick="exitAddress()" style="width: 200px">Exit First Address</button>
-          <button class="ui primary button" onclick="showAddresses()" style="width: 200px">Refresh balances</button>
+          <button class="ui primary button" onclick="mergeAllUTXOs()" style="width: 210px">Merge UTXOs In Place</button>
+          <button class="ui primary button" onclick="mergeAddresses()" style="width: 210px">Merge to First Address</button>
+          <button class="ui primary button" onclick="exitAddress()" style="width: 210px">Exit First Address</button>
+          <button class="ui primary button" onclick="mergeFirstUTXOs()" style="width: 210px">Merge 1st Address UTXOs</button>
+          <button class="ui primary button" onclick="showAddresses()" style="width: 210px">Refresh balances</button>
         </div>
         <h4>Childchain Balances</h4>
         <div id="childchainBalance" class="balance"></div>
