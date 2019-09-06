@@ -83,11 +83,16 @@
     <div class='row'>
       <div id="RingAddressArea" class="address-area ui segment" style="display:block; width: 100%;">
         <h2>Token Ring Addresses</h2>
-        <div id="rotateButton">
-          <button class="ui primary button" onclick="rotateTokens()">Rotate Tokens</button>
-          <button class="ui primary button" onclick="redistributeTokens()">Redistribute Tokens</button>
-          <button class="ui primary button" onclick="redistributeEth()">Redistribute ETH</button>
-          <button class="ui primary button" onclick="showRingBalances()">Refresh Balances</button>
+        <div id="distributeButton" class="balance"  style="display:none;">
+          <button class="ui primary button" onclick="distributeTokens()" style="width: 200px">Distribute Tokens</button>
+          <button class="ui primary button" onclick="distributeEth()" style="width: 200px">Distribute ETH</button>
+          <br><br>
+        </div>
+        <div id="rotateButton" class="balance">
+          <button class="ui primary button" onclick="rotateTokens()" style="width: 200px">Rotate Tokens</button>
+          <button class="ui primary button" onclick="redistributeTokens()" style="width: 200px">Redistribute Tokens</button>
+          <button class="ui primary button" onclick="redistributeEth()" style="width: 200px">Redistribute ETH</button>
+          <button class="ui primary button" onclick="showRingBalances()" style="width: 200px">Refresh Balances</button>
         </div>
         <h4>Token Ring Token Contract</h4>
         <div id="RingTokenContractAddress" class="balance"></div>

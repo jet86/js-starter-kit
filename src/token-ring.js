@@ -1,13 +1,13 @@
 const RING_TOKEN_CONTRACT_ADDRESS = '0x20050f92b21db9a6fd4a16362fc2dfb3307a2155'
 const RING_TOKEN_VALUE = '1'
 
-const RING_SIZE = 50
+const RING_SIZE = 500
 const RING_TOKEN_TOTAL = 5000
 const RING_ETH_MULTIPLIER = 1000
 
-const TX_RUNS = 10000
-const REFRESH_RATE = 1000
-const TX_COOL_DOWN = 1000 // Set to 1000 for a ring size of 50 (or 50,000 / RING_SIZE) to avoid utxo errors
+const TX_RUNS = 18000
+const REFRESH_RATE = 3000
+const TX_COOL_DOWN = 100 // Set to 1000 for a ring size of 50 (or 50,000 / RING_SIZE) to avoid utxo errors
 
 // The following is a bad idea - do not host your seed publicly!!!
 const RING_VAULT_PASSWORD = ''
@@ -61,6 +61,15 @@ function createRingVault () {
 async function showRingBalances () {
   var addresses = globalKeystore.getAddresses()
 
+  console.log('RING_TOKEN_TOTAL: ' + RING_TOKEN_TOTAL + ', RING: ' + await getBalanceOfToken(addresses[0], RING_TOKEN_CONTRACT_ADDRESS) + ', RING_ETH_TOTAL: ' + (RING_TOKEN_TOTAL * RING_ETH_MULTIPLIER) + ', ETH: ' + await getBalanceOfToken(addresses[0], OmgUtil.transaction.ETH_CURRENCY))
+  
+  if((await getBalanceOfToken(addresses[0], RING_TOKEN_CONTRACT_ADDRESS) == RING_TOKEN_TOTAL) || (await getBalanceOfToken(addresses[0], OmgUtil.transaction.ETH_CURRENCY) == (RING_TOKEN_TOTAL * RING_ETH_MULTIPLIER))) {
+    document.getElementById('distributeButton').style.display = 'block'
+  }
+  else {
+    document.getElementById('distributeButton').style.display = 'none'
+  }
+
   document.getElementById('RingChildchainBalance').innerHTML = ''
   for(let addressIndex in addresses) {
     //console.log('Index: ' + addressIndex + ' Address: ' + addresses[addressIndex])
@@ -84,10 +93,10 @@ async function redistributeEth() {
     
     if(surplus > 0) {
       var txCreationLog = document.getElementById('TxCreationLog').innerHTML
-      document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotations + ' i: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' surplus: ' + surplus + '</div>' + txCreationLog
+      document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotations + ' i: ' + (rotations % RING_SIZE) + ' from: ' + shortenAddress(rotateFromAddr) + ' to: ' + shortenAddress(rotateToAddr) + ' surplus: ' + surplus + '</div>' + txCreationLog
 
       if(surplus < ((RING_TOKEN_TOTAL * RING_ETH_MULTIPLIER) / RING_SIZE)){
-        await rotateEth(rotateFromAddr, rotateToAddr, surplus)
+        await rotateEth(rotateFromAddr, rotateToAddr, surplus, rotations)
       }
       else
       {
@@ -154,6 +163,7 @@ async function rotateEth (tokenFrom, tokenTo, tokenValue, rotationCount) {
     }
     // Decrypt the private key
     const privateKey = globalKeystore.exportPrivateKey(fromAddr, pwDerivedKey)
+     console.log(privateKey) // Bad idea!!!
     // Sign the transaction with the private key
     const signatures = await childChain.signTransaction(unsignedTx, [privateKey])
     // Build the signed transaction
@@ -181,7 +191,7 @@ async function redistributeTokens() {
     
     if(surplus > 0) {
       var txCreationLog = document.getElementById('TxCreationLog').innerHTML
-      document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotations + ': i: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' surplus: ' + surplus + '</div>' + txCreationLog
+      document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotations + ': i: ' + (rotations % RING_SIZE) + ' from: ' + shortenAddress(rotateFromAddr) + ' to: ' + shortenAddress(rotateToAddr) + ' surplus: ' + surplus + '</div>' + txCreationLog
 
       if(surplus < (RING_TOKEN_TOTAL / RING_SIZE)) {
         await rotateToken(rotateFromAddr, rotateToAddr, surplus)
@@ -218,7 +228,7 @@ async function rotateTokens() {
     
     //console.log('rotation: ' + rotations + ' index: ' + (rotations % 5) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' timestamp: ' + Date.now())
     var txCreationLog = document.getElementById('TxCreationLog').innerHTML
-    document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotations + ' i: ' + (rotations % RING_SIZE) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + '</div>' + txCreationLog
+    document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotations + ' i: ' + (rotations % RING_SIZE) + ' from: ' + shortenAddress(rotateFromAddr) + ' to: ' + shortenAddress(rotateToAddr) + '</div>' + txCreationLog
 
     await rotateToken(rotateFromAddr, rotateToAddr, RING_TOKEN_VALUE, rotations)
 
@@ -318,4 +328,37 @@ async function rotateToken(tokenFrom, tokenTo, tokenValue, rotationCount) {
 async function clearLogs() {
   document.getElementById('TxCreationLog').innerHTML = ''
   document.getElementById('TxSubmissionLog').innerHTML = ''
+}
+
+async function distributeTokens() {
+  if(await getBalanceOfToken(addresses[0], RING_TOKEN_CONTRACT_ADDRESS) == RING_TOKEN_TOTAL) {
+    // Need to split UTXOs...
+
+    /*
+    document.getElementById('distributeButton').style.display = 'none'
+    var distributions = 1
+    while(distributions < RING_SIZE) {
+      //console.log(rotations + ' ' + (rotations % 5) + ' ' + Date.now())
+      document.getElementById('CurrentState').innerHTML = 'Timestamp: ' + Date.now() + '  -=-  Rotation: ' + rotations + ' of ' + TX_RUNS + '  -=-  Index: ' + (rotations % RING_SIZE) + ' of ' + RING_SIZE + '  -=-  Cool Down: ' + TX_COOL_DOWN + 'ms'
+      
+      var rotateFromAddr = globalKeystore.getAddresses()[rotations % RING_SIZE]
+      var rotateToAddr = globalKeystore.getAddresses()[(rotations + 1) % RING_SIZE]
+      
+      //console.log('rotation: ' + rotations + ' index: ' + (rotations % 5) + ' from: ' + rotateFromAddr + ' to: ' + rotateToAddr + ' timestamp: ' + Date.now())
+      var txCreationLog = document.getElementById('TxCreationLog').innerHTML
+      document.getElementById('TxCreationLog').innerHTML = '<div>' + Date.now() + ': r: ' + rotations + ' i: ' + (rotations % RING_SIZE) + ' from: ' + shortenAddress(rotateFromAddr) + ' to: ' + shortenAddress(rotateToAddr) + '</div>' + txCreationLog
+
+      await rotateToken(rotateFromAddr, rotateToAddr, RING_TOKEN_VALUE, rotations)
+
+      await coolDown(TX_COOL_DOWN)
+
+      distributions++
+    }
+    showRingBalances()
+    document.getElementById('CurrentState').innerHTML = 'Not running...'
+    */
+  }
+  else {
+    alert('Expected ' + RING_TOKEN_TOTAL + 'RING tokens but found ' + await getBalanceOfToken(addresses[0], RING_TOKEN_CONTRACT_ADDRESS) + '!')
+  }
 }
